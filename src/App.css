@@ -1,0 +1,4 @@
+.page-link.active {
+    color: var(--secondary);
+    font-weight: bold;
+}

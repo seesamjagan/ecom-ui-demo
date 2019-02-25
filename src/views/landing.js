@@ -16,9 +16,14 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Row
+  Row,
+  Pagination,
+  PaginationItem,
+  PaginationLink
 } from "reactstrap";
 import { fetchConfig } from "../utils/fetch-config";
+
+const PAGE_SIZE = 12;
 
 export default class Landing extends Component {
   login = userName => {
@@ -44,11 +49,13 @@ export default class Landing extends Component {
   state = {
     products: [],
     items: [],
-    showLoginModel: false
+    showLoginModel: false,
+    total: PAGE_SIZE,
+    page: 1
   };
 
-  loadProducts = () => {
-    let payload = {};
+  loadProducts = (page) => {
+    let payload = { page, size:PAGE_SIZE };
 
     fetch("http://localhost:3300/products", fetchConfig(payload))
       .then(res => {
@@ -58,7 +65,9 @@ export default class Landing extends Component {
         if (res.status) {
           this.setState({
             products: res.data,
-            items: res.data
+            items: res.data,
+            page: Number(res.page),
+            total: Number(res.total)
           });
         } else {
           alert(res.message);
@@ -94,7 +103,7 @@ export default class Landing extends Component {
   };
 
   componentDidMount() {
-    this.loadProducts();
+    this.loadProducts(1);
   }
 
   componentDidUpdate() {
@@ -128,8 +137,12 @@ export default class Landing extends Component {
     this.login(userName);
   };
 
+  onPageClick = page => {
+    this.loadProducts(page)
+  }
+
   render() {
-    let { products, showLoginModel } = this.state;
+    let { products, showLoginModel, page, total } = this.state;
     return (
       <>
         <Row>
@@ -146,6 +159,9 @@ export default class Landing extends Component {
             <Product data={product} key={i} addToCart={this.addToCart} />
           ))}
         </Row>
+        <hr/>
+        <PageNav current={page} total={total} onPageClick={this.onPageClick} />
+        <hr/>
         <LoginModel
           isOpen={showLoginModel}
           onLogin={this.onLogin}
@@ -156,8 +172,41 @@ export default class Landing extends Component {
   }
 }
 
+const PageNav = ({current, total, onPageClick}) => {
+  
+  let size = Math.ceil(total / PAGE_SIZE)
+  let navs = Array.apply(null, {length: size}).map((item, index)=>{
+    return (<PaginationItem key={index}>
+    <PaginationLink onClick={()=>onPageClick(index+1)} className={(index+1)===current ? "active" : ""}>{index+1}</PaginationLink>
+  </PaginationItem>)
+  })
+  
+  return (<Row>
+  <Col md={12} className="text-center">
+    <Pagination size="sm" aria-label="Product Page Navigation" className="d-inline-block">
+    {/* 
+      <PaginationItem>
+        <PaginationLink first href="#" />
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationLink previous href="#" />
+      </PaginationItem>
+       */}
+      {navs}
+      {/* 
+      <PaginationItem>
+        <PaginationLink next href="#" />
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationLink last href="#" />
+      </PaginationItem>
+       */}
+    </Pagination>
+  </Col>
+</Row>)}
+
 const Product = ({ data, addToCart }) => (
-  <Col>
+  <Col md={3}>
     <Card>
       <CardImg width="100%" src={data.url[0]} alt={data.desc} />
       <CardBody>
@@ -166,7 +215,9 @@ const Product = ({ data, addToCart }) => (
         </CardTitle>
         <CardText>{data.desc}</CardText>
         <CardText>
-          <small className="text-muted"><Badge>{data.stock}</Badge> left in stock</small>
+          <small className="text-muted">
+            <Badge>{data.stock}</Badge> left in stock
+          </small>
         </CardText>
       </CardBody>
       <CardFooter>
