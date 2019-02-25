@@ -21,6 +21,8 @@ import {
   PaginationItem,
   PaginationLink
 } from "reactstrap";
+import {NavLink as Link} from "react-router-dom";
+
 import { fetchConfig } from "../utils/fetch-config";
 
 const PAGE_SIZE = 12;
@@ -206,12 +208,12 @@ const PageNav = ({current, total, onPageClick}) => {
 </Row>)}
 
 const Product = ({ data, addToCart }) => (
-  <Col md={3}>
+  <Col md={3} lg={3} sm={6}>
     <Card>
       <CardImg width="100%" src={data.url[0]} alt={data.desc} />
       <CardBody>
         <CardTitle>
-          <h3>{data.name}</h3>
+          <strong className="text-truncate text-capitalize" title={data.name}><Link to={"/products/"+data.id}>{data.name}</Link></strong>
         </CardTitle>
         <CardText>{data.desc}</CardText>
         <CardText>
@@ -222,10 +224,10 @@ const Product = ({ data, addToCart }) => (
       </CardBody>
       <CardFooter>
         <Badge color="success" className="float-left">
-          <small>${data.unitPrice}</small>
+          <span>$ {data.unitPrice}</span>
         </Badge>
         <Badge color="primary" className="float-right">
-          <small onClick={() => addToCart(data.id)}>Add to Card</small>
+          <span onClick={() => addToCart(data.id)}>Add to Card</span>
         </Badge>
       </CardFooter>
     </Card>

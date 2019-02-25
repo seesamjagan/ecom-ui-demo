@@ -1,24 +1,25 @@
 import React, { Component } from "react";
-import "./App.css";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Nav,
-  NavItem,
-  Badge
-} from "reactstrap";
-import Landing from "./views/landing";
-import Cart from "./views/cart";
 import {
   BrowserRouter as Router,
-  Route,
   NavLink as Link,
+  Route,
   Switch
 } from "react-router-dom";
-import { Login } from "./views/login";
+import {
+  Badge,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Nav,
+  NavItem
+} from "reactstrap";
+import "./App.css";
 import { fetchConfig } from "./utils/fetch-config";
+import Cart from "./views/cart";
+import Landing from "./views/landing";
+import { Login } from "./views/login";
+import { ProductDetail } from "./views/product-detail";
 
 class App extends Component {
   state = {
@@ -27,7 +28,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    if(this.state.userName) {
+    if (this.state.userName) {
       this.loadCart(this.state.userName);
     }
   }
@@ -89,20 +90,24 @@ const AppBody = props => (
   </CardBody>
 );
 
-const AppNavBar = props => (
-  <Nav>
-    <NavItem>
-      <Link className="nav-link" to="/">
-        Home
-      </Link>
-    </NavItem>
-    <NavItem>
-      <Link className="nav-link" to="/about">
-        About us
-      </Link>
-    </NavItem>
-  </Nav>
-);
+const AppNavBar = props => {
+  let navs = [
+    { to: "/", label: "Home" },
+    { to: "/about", label: "About Us" },
+    { to: "/products", label: "Products" }
+  ];
+  return (
+    <Nav>
+      {navs.map(({ to, label }, index) => (
+        <NavItem key={index}>
+          <Link className="nav-link" to={to}>
+            {label}
+          </Link>
+        </NavItem>
+      ))}
+    </Nav>
+  );
+};
 
 const AppRoutes = ({ userName, onAddToCart, onLoginSuccess }) => (
   <Switch>
@@ -111,6 +116,30 @@ const AppRoutes = ({ userName, onAddToCart, onLoginSuccess }) => (
       path="/"
       render={props => (
         <Landing
+          {...props}
+          userName={userName}
+          onAddToCart={onAddToCart}
+          onLoginSuccess={onLoginSuccess}
+        />
+      )}
+    />
+    <Route
+      exact
+      path="/products"
+      render={props => (
+        <Landing
+          {...props}
+          userName={userName}
+          onAddToCart={onAddToCart}
+          onLoginSuccess={onLoginSuccess}
+        />
+      )}
+    />
+    <Route
+      exact
+      path="/products/:id"
+      render={props => (
+        <ProductDetail
           {...props}
           userName={userName}
           onAddToCart={onAddToCart}
@@ -140,19 +169,19 @@ const AppRoutes = ({ userName, onAddToCart, onLoginSuccess }) => (
 const AppHeader = ({ userName, cart }) => (
   <CardHeader>
     <h1 className="float-left">E-Com</h1>
-    {userName && (
-      <Link to="/profile" className="float-right">
-        <Badge color="info"> {userName} </Badge>
+
+    <div className="float-right">
+      <Link to="/cart">
+        Cart <Badge> ({cart.length}) </Badge>
       </Link>
-    )}
-    {!userName && (
-      <Link to="/login" className="float-right">
-        Login
-      </Link>
-    )}
-    <Link to="/cart" className="float-right">
-      Cart <Badge> ({cart.length}) </Badge>
-    </Link>
+      <span> | </span>
+      {userName && (
+        <Link to="/profile">
+          <Badge color="info"> {userName} </Badge>
+        </Link>
+      )}
+      {!userName && <Link to="/login">Login</Link>}
+    </div>
   </CardHeader>
 );
 
