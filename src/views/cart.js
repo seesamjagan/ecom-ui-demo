@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Table, Row, Col, Media, Button } from "reactstrap";
+import { Link } from "react-router-dom";
+import { Col, Media, Row, Table } from "reactstrap";
 import { fetchConfig } from "../utils/fetch-config";
 
 export default class Cart extends Component {
@@ -36,7 +37,9 @@ export default class Cart extends Component {
     return (
       <>
         <Row>
-          <Col><strong>Items in your Cart</strong></Col>
+          <Col>
+            <h2>Items in your Cart</h2>
+          </Col>
         </Row>
         <Row>
           <Col>
@@ -58,7 +61,8 @@ export default class Cart extends Component {
                       <td>{i + 1}</td>
                       <td>
                         <Media
-                          object className="rounded-circle"
+                          object
+                          className="rounded-circle"
                           src={item.url[0].replace("150", "64")}
                           alt={item.name}
                         />
@@ -76,10 +80,14 @@ export default class Cart extends Component {
             </Table>
           </Col>
         </Row>
-        <hr/>
+        <hr />
         <Row>
-            <Col className="text-right"><Button onClick={this.props.onBack}>Back</Button></Col>
-            <Col><Button>Buy Now</Button></Col>
+          <Col className="text-right">
+            <Link to="/">Back</Link>
+          </Col>
+          <Col>
+            <Link to="/order">Buy Now</Link>
+          </Col>
         </Row>
       </>
     );

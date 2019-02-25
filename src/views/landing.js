@@ -1,48 +1,41 @@
-import React, { Component } from "react";
-import { fetchConfig } from "../utils/fetch-config";
+import React, { Component, useEffect } from "react";
 import {
-  Row,
-  Col,
-  CardImg,
-  Card,
-  CardImgOverlay,
-  CardTitle,
-  CardText,
-  CardFooter,
-  Button,
   Badge,
+  Button,
+  Card,
   CardBody,
-  CardHeader,
-  InputGroup,
-  InputGroupText,
+  CardFooter,
+  CardImg,
+  CardText,
+  CardTitle,
+  Col,
   Input,
+  InputGroup,
   InputGroupAddon,
   Modal,
-  ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  ModalHeader,
+  Row
 } from "reactstrap";
+import { fetchConfig } from "../utils/fetch-config";
 
 export default class Landing extends Component {
-
-  login = (userName) => {
-    let data = {userName};
-    fetch(
-      "http://localhost:3300/users/login",
-      fetchConfig(data)
-    )
-      .then((res) => {
+  login = userName => {
+    let data = { userName };
+    fetch("http://localhost:3300/users/login", fetchConfig(data))
+      .then(res => {
         return res.json();
       })
-      .then((res) => {
-        if(res.status) {
-            this.props.onLoginSuccess(userName);
-            this.setState({showLoginModel: false});
+      .then(res => {
+        if (res.status) {
+          this.props.onLoginSuccess(userName);
+          this.setState({ showLoginModel: false });
         } else {
           alert(res.message);
         }
       })
-      .catch((reason) => {
+      .catch(reason => {
         alert("error: " + reason);
         //alert("oops");
       });
@@ -105,9 +98,9 @@ export default class Landing extends Component {
   }
 
   componentDidUpdate() {
-    if(this.props.userName && this.state.pendingCartId) {
+    if (this.props.userName && this.state.pendingCartId) {
       this.addToCart(this.state.pendingCartId);
-      this.setState({pendingCartId: null})
+      this.setState({ pendingCartId: null });
     }
   }
 
@@ -164,7 +157,7 @@ export default class Landing extends Component {
 }
 
 const Product = ({ data, addToCart }) => (
-  <Col md={3}>
+  <Col>
     <Card>
       <CardImg width="100%" src={data.url[0]} alt={data.desc} />
       <CardBody>
@@ -173,40 +166,54 @@ const Product = ({ data, addToCart }) => (
         </CardTitle>
         <CardText>{data.desc}</CardText>
         <CardText>
-          <small className="text-muted">{data.stock} left in stock</small>
+          <small className="text-muted"><Badge>{data.stock}</Badge> left in stock</small>
         </CardText>
       </CardBody>
       <CardFooter>
         <Badge color="success" className="float-left">
-          ${data.unitPrice}
+          <small>${data.unitPrice}</small>
         </Badge>
         <Badge color="primary" className="float-right">
-          <span onClick={() => addToCart(data.id)}>Add to Card</span>
+          <small onClick={() => addToCart(data.id)}>Add to Card</small>
         </Badge>
       </CardFooter>
     </Card>
   </Col>
 );
 
-const LoginModel = ({ isOpen, onLogin, onCancel, className }) => (
-  <Modal isOpen={isOpen} toggle={onCancel} className={className}>
-    <ModalHeader toggle={onCancel}>Login</ModalHeader>
-    <ModalBody>
-      <InputGroup>
-        <InputGroupAddon addonType="prepend">Username</InputGroupAddon>
-        <Input placeholder="eg. jagan" id="userName" />
-      </InputGroup>
-    </ModalBody>
-    <ModalFooter>
-      <Button
-        color="primary"
-        onClick={() => onLogin(document.getElementById("userName").value)}
-      >
-        Login
-      </Button>{" "}
-      <Button color="secondary" onClick={onCancel}>
-        Cancel
-      </Button>
-    </ModalFooter>
-  </Modal>
-);
+const LoginModel = ({ isOpen, onLogin, onCancel, className }) => {
+  useEffect(() => {
+    let e = document.getElementById("userName");
+    e && e.focus();
+    console.log("inside effects");
+  }, [isOpen]);
+
+  const onKeyUp = e => {
+    if (e.key === "Enter") {
+      onLogin(e.target.value);
+    }
+  };
+
+  return (
+    <Modal isOpen={isOpen} toggle={onCancel} className={className}>
+      <ModalHeader toggle={onCancel}>Login</ModalHeader>
+      <ModalBody>
+        <InputGroup>
+          <InputGroupAddon addonType="prepend">Username</InputGroupAddon>
+          <Input placeholder="eg. jagan" id="userName" onKeyUp={onKeyUp} />
+        </InputGroup>
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          color="primary"
+          onClick={() => onLogin(document.getElementById("userName").value)}
+        >
+          Login
+        </Button>{" "}
+        <Button color="secondary" onClick={onCancel}>
+          Cancel
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+};
