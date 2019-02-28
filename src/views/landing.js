@@ -179,8 +179,8 @@ const PageNav = ({current, total, onPageClick}) => {
   let size = Math.ceil(total / PAGE_SIZE)
   let navs = Array.apply(null, {length: size}).map((item, index)=>{
     return (<PaginationItem key={index}>
-    {/* <PaginationLink onClick={()=>onPageClick(index+1)} className={(index+1)===current ? "active" : ""}>{index+1}</PaginationLink> */}
-    <PaginationLink href={"/products/"+(index+1)+"/"+PAGE_SIZE}>{index+1}</PaginationLink>
+    <PaginationLink onClick={()=>onPageClick(index+1)} className={(index+1)===current ? "active" : ""}>{index+1}</PaginationLink>
+    {/* <PaginationLink href={"/products/"+(index+1)+"/"+PAGE_SIZE}>{index+1}</PaginationLink> */}
   </PaginationItem>)
   })
   
