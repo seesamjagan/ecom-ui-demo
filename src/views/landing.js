@@ -214,7 +214,7 @@ const Product = ({ data, addToCart }) => (
       <CardImg width="100%" src={data.url[0]} alt={data.desc} />
       <CardBody>
         <CardTitle>
-          <strong className="text-truncate text-capitalize" title={data.name}><Link to={"/products/"+data.id}>{data.name}</Link></strong>
+          <strong className="text-truncate text-capitalize" title={data.name}><Link to={"/product/"+data.id}>{data.name}</Link></strong>
         </CardTitle>
         <CardText>{data.desc}</CardText>
         <CardText>

@@ -137,7 +137,7 @@ const AppRoutes = ({ userName, onAddToCart, onLoginSuccess }) => (
     />
     <Route
       exact
-      path="/products/:id"
+      path="/product/:id"
       render={props => (
         <ProductDetail
           {...props}
