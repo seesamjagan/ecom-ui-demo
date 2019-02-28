@@ -30,7 +30,7 @@ export const Login = ({ onLoginSuccess, className, userName }) => {
 
   const login = userName => {
     let data = { userName };
-    fetch("http://localhost:3300/users/login", fetchConfig(data))
+    fetch("/users/login", fetchConfig(data))
       .then(res => {
         return res.json();
       })

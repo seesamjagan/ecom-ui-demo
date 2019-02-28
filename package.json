@@ -2,6 +2,7 @@
   "name": "ecom-ui-demo",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3300/",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.3.1",

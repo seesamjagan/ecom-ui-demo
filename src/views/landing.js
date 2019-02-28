@@ -30,7 +30,7 @@ const PAGE_SIZE = 12;
 export default class Landing extends Component {
   login = userName => {
     let data = { userName };
-    fetch("http://localhost:3300/users/login", fetchConfig(data))
+    fetch("/users/login", fetchConfig(data))
       .then(res => {
         return res.json();
       })
@@ -59,7 +59,7 @@ export default class Landing extends Component {
   loadProducts = (page) => {
     let payload = { page, size:PAGE_SIZE };
 
-    fetch("http://localhost:3300/products", fetchConfig(payload))
+    fetch("/products", fetchConfig(payload))
       .then(res => {
         return res.json();
       })
@@ -88,7 +88,7 @@ export default class Landing extends Component {
 
     let payload = { id, userName: this.props.userName };
 
-    fetch("http://localhost:3300/products/add-to-cart", fetchConfig(payload))
+    fetch("/products/add-to-cart", fetchConfig(payload))
       .then(res => {
         return res.json();
       })
@@ -151,7 +151,7 @@ export default class Landing extends Component {
           <Col>
             <InputGroup>
               <Input placeholder="search" onChange={this.onChange} />
-              <InputGroupAddon addonType="append">🔍</InputGroupAddon>
+              <InputGroupAddon addonType="append"><span role="img" aria-label="search">🔍</span></InputGroupAddon>
             </InputGroup>
           </Col>
         </Row>
@@ -179,7 +179,8 @@ const PageNav = ({current, total, onPageClick}) => {
   let size = Math.ceil(total / PAGE_SIZE)
   let navs = Array.apply(null, {length: size}).map((item, index)=>{
     return (<PaginationItem key={index}>
-    <PaginationLink onClick={()=>onPageClick(index+1)} className={(index+1)===current ? "active" : ""}>{index+1}</PaginationLink>
+    {/* <PaginationLink onClick={()=>onPageClick(index+1)} className={(index+1)===current ? "active" : ""}>{index+1}</PaginationLink> */}
+    <PaginationLink href={"/products/"+(index+1)+"/"+PAGE_SIZE}>{index+1}</PaginationLink>
   </PaginationItem>)
   })
   

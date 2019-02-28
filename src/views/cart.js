@@ -15,7 +15,7 @@ export default class Cart extends Component {
   loadCart = userName => {
     let payload = { userName };
 
-    fetch("http://localhost:3300/products/get-cart", fetchConfig(payload))
+    fetch("/products/get-cart", fetchConfig(payload))
       .then(res => {
         return res.json();
       })

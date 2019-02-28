@@ -16,7 +16,7 @@ import { fetchConfig } from "../utils/fetch-config";
 export const ProductDetail = ({ history, match }) => {
   let [product, setProduct] = useState(null);
   useEffect(() => {
-    let url = `http://localhost:3300/products/product/${match.params.id}`;
+    let url = `/products/product/${match.params.id}`;
     let payload = { id: match.params.id };
 
     fetch(url, fetchConfig(payload))
@@ -40,7 +40,7 @@ export const ProductDetail = ({ history, match }) => {
   };
   return (
     <Card>
-      <CardHeader>Product Details</CardHeader>
+      <CardHeader><h2 className="text-capitalize">{product ? product.name : "Product Details"}</h2></CardHeader>
 
       <CardBody>
         {!product && <p>{match.params.id} is the id of the selected product</p>}
@@ -48,13 +48,13 @@ export const ProductDetail = ({ history, match }) => {
           <div>
             <Row>
               {product.url.map(url => (
-                <Col>
-                  <Media src={url} alt={product.desc} key={url} />
+                <Col key={url} >
+                  <Media src={url} alt={product.desc}/>
                 </Col>
               ))}
             </Row>
 
-            <CardTitle>{product.name}</CardTitle>
+            {/* <CardTitle>{product.name}</CardTitle> */}
             <CardText>{product.desc}</CardText>
           </div>
         )}
